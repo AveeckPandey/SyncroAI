@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --panel-hover: #334155;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Custom scrollbar for better look */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
+    }
+
+    body {
+      width: 400px;
+      margin: 0;
+      padding: 20px;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    /* File Input Styling */
+    .file-input-wrapper {
+      position: relative;
+      width: 100%;
+      height: 48px;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 13px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.4);
+    }
+    
+    .file-input-wrapper:hover, .file-input-wrapper.has-file {
+      border-color: var(--accent);
+      color: var(--text);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    input[type="file"] {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .btn {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 14px;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn.loading {
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .loader {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .btn.loading .loader {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    #status {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 18px;
+      transition: color 0.3s ease;
+    }
+
+    /* Results section formatting */
+    #results {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #results.visible {
+      display: flex;
+      animation: slideUp 0.4s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-section {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 12px 14px;
+      background: var(--panel);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header .icon {
+      font-size: 16px;
+    }
+
+    .section-content {
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* Hiding raw verbose data */
+    .raw-data-container {
+      margin-top: 10px;
+    }
+    
+    details {
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    summary {
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+      display: flex;
+      align-items: center;
+    }
+    
+    summary::marker {
+      color: var(--accent);
+    }
+
+    .raw-data {
+      padding: 0 14px 14px;
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 11px;
+      color: #94a3b8;
+      max-height: 150px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      background: #0f172a;
+    }
+
+    .list-items {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+    }
+
+    .list-items li {
+      margin-bottom: 8px;
+      position: relative;
+    }
+    
+    .list-items li::marker {
+      color: var(--accent);
+    }
+
+    .highlight-card {
+      background: linear-gradient(145deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 16px;
+    }
+    
+    .highlight-card .section-header {
+      background: transparent;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+      padding: 0 0 10px 0;
+      margin-bottom: 10px;
+      color: #e2e8f0;
+    }
+
+    .highlight-card .section-content {
+      padding: 0;
+      color: #f1f5f9;
+    }
+
+    .keyword-tag {
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .status-success { color: var(--success) !important; font-weight: 500; }
+    .status-error { color: #ef4444 !important; font-weight: 500; }
+
+  </style>
+</head>
+<body>
+  
+  <div class="header">
+    <h3>SyncroAI</h3>
+    <p class="subtitle">AI-Powered LinkedIn & Resume Audit</p>
+  </div>
+
+  <div class="card">
+    <div class="file-input-wrapper" id="dropZone">
+      <span id="fileNameDisplay">📁 Upload Resume PDF (Optional)</span>
+      <input type="file" id="resumeUpload" accept=".pdf">
+    </div>
+  </div>
+
+  <button id="analyzeBtn" class="btn">
+    <span class="loader"></span>
+    <span class="btn-text">Audit Profile</span>
+  </button>
+  
+  <div id="status">Ready to scan.</div>
+
+  <div class="card highlight-card" style="display: none;" id="conclusionCard">
+    <div class="section-header">
+      <span class="icon">✨</span> Audit Action Plan
+    </div>
+    <div class="section-content">
+      <p id="resultsSummary" style="margin: 0 0 10px 0; font-weight: 500;"></p>
+      <ul id="resultsList" class="list-items" style="font-size: 13.5px;"></ul>
+
+      <div id="contentSuggestions" style="display: none; margin-top: 16px; border-top: 1px solid rgba(139, 92, 246, 0.3); padding-top: 12px;">
+        <div id="keywordsContainer">
+          <p style="margin: 0 0 8px 0; font-weight: 600; font-size: 13px; color: #f8fafc;">Keywords to Add</p>
+          <div id="recommendedKeywords" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;"></div>
+        </div>
+
+        <div id="headlineContainer">
+          <p style="margin: 0 0 8px 0; font-weight: 600; font-size: 13px; color: #f8fafc;">Suggested Headline</p>
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; font-size: 12px; color: #e2e8f0; font-style: italic; border: 1px dashed rgba(139, 92, 246, 0.4); line-height: 1.5; margin-bottom: 12px;" id="recommendedHeadlineText"></div>
+        </div>
+        
+        <div id="aboutContainer">
+          <p style="margin: 0 0 8px 0; font-weight: 600; font-size: 13px; color: #f8fafc;">Suggested 'About' Section</p>
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; font-size: 12px; color: #e2e8f0; font-style: italic; border: 1px dashed rgba(139, 92, 246, 0.4); line-height: 1.5;" id="recommendedAboutText"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="results">
+    
+    <!-- Resume Snippet section -->
+    <div class="result-section" id="resumeSection">
+      <div class="section-header">
+        <span class="icon">📄</span> Resume Data
+      </div>
+      <div class="section-content">
+        <div id="resumeSummary" style="margin-bottom: 8px; font-weight: 500; color: #f8fafc;"></div>
+        <details class="raw-data-container">
+          <summary>View Parsed Text</summary>
+          <pre id="resumeRaw" class="raw-data"></pre>
+        </details>
+      </div>
+    </div>
+
+    <!-- LinkedIn Snippet section -->
+    <div class="result-section" id="linkedinSection">
+      <div class="section-header">
+        <span class="icon">💼</span> LinkedIn Extraction
+      </div>
+      <div class="section-content">
+        <div id="scrapedSummary" style="margin-bottom: 8px; font-weight: 500; color: #f8fafc;"></div>
+        <ul id="scrapedList" class="list-items" style="margin-bottom: 12px; font-size: 12px; color: var(--muted);"></ul>
+        <details class="raw-data-container" id="rawLinkedinContainer" style="display: none;">
+          <summary>View AI Evaluation Raw Output</summary>
+          <pre id="resultsRaw" class="raw-data"></pre>
+        </details>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

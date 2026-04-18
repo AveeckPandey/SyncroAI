@@ -64,7 +64,7 @@ Built for developers and students who want their digital presence to match the s
 
 <div align="center">
 
-![Keywords and Suggested Headline](Sample-2.png)
+![Keywords and Suggested Headline](Sample-3.3.png)
 
 *Context-aware keyword recommendations and a rewritten headline.*
 

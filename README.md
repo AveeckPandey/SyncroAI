@@ -89,17 +89,6 @@ Built for developers and students who want their digital presence to match the s
 *Structured extraction of your LinkedIn profile data alongside parsed resume content.*
 
 </div>
-
-### Multi-Profile Support
-
-<div align="center">
-
-![Suman Profile Audit](sample2_1.png)
-
-*Works seamlessly across any LinkedIn profile — with or without a resume upload.*
-
-</div>
-
 ---
 
 ## 🤖 The Agentic Workflow

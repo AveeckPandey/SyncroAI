@@ -74,7 +74,7 @@ Built for developers and students who want their digital presence to match the s
 
 <div align="center">
 
-![Suggested About Section](sample-2_3.png)
+![Suggested About Section](sample-3.1.png)
 
 *A full, recruiter-optimized About section drafted from your resume.*
 
